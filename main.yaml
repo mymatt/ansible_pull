@@ -4,7 +4,6 @@
   gather_facts: false
 
   vars:
-    # aws_profile: key
     destination: terraform
     s3bucket: ansibleroles
     ansible_roles: nginx
@@ -12,8 +11,18 @@
     consul_agent: server
     server_ip: 0.0.0.0
     client_ip: 0.0.0.0
+    access_key: key
+    secret_key: key
 
   tasks:
+  - name: print access key
+    debug:
+      msg: "access key is {{ access_key }}"
+
+  - name: print secret key
+    debug:
+      msg: "secret key is {{ secret_key }}"
+
   - name: print client
     debug:
       msg: "Client IP is {{ client_ip }}"
@@ -38,6 +47,8 @@
   - name: get file from s3 bucket
     aws_s3:
       # profile: "{{ aws_profile }}"
+      aws_access_key: "{{ access_key }}"
+      aws_secret_key: "{{ secret_key }}"
       bucket: "{{ s3bucket }}"
       object: "/{{ item }}.zip"
       dest: "/{{ destination }}/provisioners/{{ item }}.zip"
