@@ -47,8 +47,8 @@
   - name: get file from s3 bucket
     aws_s3:
       # profile: "{{ aws_profile }}"
-      aws_access_key: "{{ access_key }}"
-      aws_secret_key: "{{ secret_key }}"
+      # aws_access_key: "{{ access_key }}"
+      # aws_secret_key: "{{ secret_key }}"
       bucket: "{{ s3bucket }}"
       object: "/{{ item }}.zip"
       dest: "/{{ destination }}/provisioners/{{ item }}.zip"
