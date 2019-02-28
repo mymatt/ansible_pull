@@ -13,35 +13,6 @@
     client_ip: 0.0.0.0
 
   tasks:
-  - name: print access key
-    debug:
-      msg: "access key is {{ access_key }}"
-
-  - name: print secret key
-    debug:
-      msg: "secret key is {{ secret_key }}"
-
-  - name: print client
-    debug:
-      msg: "Client IP is {{ client_ip }}"
-
-  - name: print server
-    debug:
-      msg: "Server IP is {{ server_ip }}"
-
-  - name: print agent
-    debug:
-      msg: "Agent is {{ consul_agent }}"
-
-  - name: print host function
-    debug:
-      msg: "Host is {{ host_function }}"
-
-  - name: print ansible roles
-    debug:
-      msg: "Roles are {{ item }}"
-    with_items: "{{ ansible_roles }}"
-
   - name: get file from s3 bucket
     aws_s3:
       bucket: "{{ s3bucket }}"
