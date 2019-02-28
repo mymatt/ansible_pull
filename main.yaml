@@ -11,8 +11,6 @@
     consul_agent: server
     server_ip: 0.0.0.0
     client_ip: 0.0.0.0
-    access_key: key
-    secret_key: key
 
   tasks:
   - name: print access key
