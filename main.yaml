@@ -54,8 +54,8 @@
   - name: wait for consul server to be running
     wait_for:
       host: "{{ server_ip }}"
-      port: 22
-      delay: 1
+      port: 8300
+      delay: 3
       timeout: 15
       state: started
     when: consul_agent = 'client'
