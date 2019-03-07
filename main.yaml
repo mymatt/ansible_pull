@@ -48,6 +48,21 @@
       state: absent
     with_items: "{{ ansible_roles }}"
 
+  # - name: sleep for 10 seconds and continue with play
+  #   wait_for: timeout=10
+  #   delegate_to: localhost
+  - name: wait for consul server to be running
+    wait_for:
+      host: "{{ server_ip }}"
+      port: 22
+      delay: 1
+      timeout: 15
+      state: started
+    when: consul_agent = 'client'
+
+  # - pause:
+  #     seconds: 3
+
   - name: install consul role
     include_role:
       name: "{{ item }}"
