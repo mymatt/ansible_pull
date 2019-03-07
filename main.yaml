@@ -52,8 +52,8 @@
     wait_for:
       host: "{{ server_ip }}"
       port: 8300
-      delay: 3
-      timeout: 15
+      delay: 15
+      timeout: 300
       state: started
     when: consul_agent == 'client'
 
