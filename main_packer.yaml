@@ -1,0 +1,88 @@
+---
+- name: download and install roles
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    destination: terraform
+    s3bucket: ansibleroles
+    ansible_roles: nginx
+    host_function: web
+    consul_agent: server
+    server_ip: 0.0.0.0
+    client_ip: 0.0.0.0
+    aak: a
+    ask: a
+
+  tasks:
+  - name: get file from s3 bucket
+    aws_s3:
+      aws_access_key: "{{ aak }}"
+      aws_secret_key: "{{ ask }}"
+      bucket: "{{ s3bucket }}"
+      object: "/{{ item }}.zip"
+      dest: "/{{ destination }}/provisioners/{{ item }}.zip"
+      mode: get
+    with_items: "{{ ansible_roles }}"
+    become: true
+
+  - name: Install dependencies
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - unzip
+    become: true
+
+  - name: create folder
+    file:
+      path: "/{{ destination }}/provisioners/roles/{{ item }}"
+      state: directory
+    with_items: "{{ ansible_roles }}"
+
+  - name: unzip role
+    unarchive:
+      src: "/{{ destination }}/provisioners/{{ item }}.zip"
+      dest: "/{{ destination }}/provisioners/roles/{{ item }}"
+    with_items: "{{ ansible_roles }}"
+
+  - name: delete zip files
+    file:
+      dest: "/{{ destination }}/provisioners/{{ item }}.zip"
+      state: absent
+    with_items: "{{ ansible_roles }}"
+
+  - name: wait for consul server to be running
+    wait_for:
+      host: "{{ server_ip }}"
+      port: 8300
+      delay: 15
+      timeout: 300
+      state: started
+    when: consul_agent == 'client'
+
+  - name: install consul role
+    include_role:
+      name: "{{ item }}"
+    vars:
+      agent: "{{ consul_agent }}"
+      consul_server_ip: "{{ server_ip }}"
+      consul_client_ip: "{{ client_ip }}"
+      node_name: "{{ host_function }}"
+    with_items: "{{ ansible_roles }}"
+    when: item == 'consul'
+
+  - name: install nginx role
+    include_role:
+      name: "{{ item }}"
+    vars:
+      nginx_server_ip: "{{ client_ip }}"
+    with_items: "{{ ansible_roles }}"
+    when: item == 'nginx'
+
+  - name: install other roles
+    include_role:
+      name: "{{ item }}"
+    with_items: "{{ ansible_roles }}"
+    when:
+      - item == 'consultemplate' or item == 'go'
