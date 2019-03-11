@@ -52,14 +52,14 @@
       state: absent
     with_items: "{{ ansible_roles }}"
 
-  - name: wait for consul server to be running
-    wait_for:
-      host: "{{ server_ip }}"
-      port: 8300
-      delay: 15
-      timeout: 300
-      state: started
-    when: consul_agent == 'client'
+  # - name: wait for consul server to be running
+  #   wait_for:
+  #     host: "{{ server_ip }}"
+  #     port: 8300
+  #     delay: 15
+  #     timeout: 300
+  #     state: started
+  #   when: consul_agent == 'client'
 
   - name: install consul role
     include_role:
