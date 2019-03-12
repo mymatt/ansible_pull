@@ -65,6 +65,7 @@
       consul_server_ip: "{{ server_ip }}"
       consul_client_ip: "{{ client_ip }}"
       node_name: "{{ host_function }}"
+      destination: "{{ destination }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
 
@@ -73,12 +74,14 @@
       name: "{{ item }}"
     vars:
       nginx_server_ip: "{{ client_ip }}"
+      destination: "{{ destination }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
   - name: install other roles
     include_role:
       name: "{{ item }}"
+      destination: "{{ destination }}"
     with_items: "{{ ansible_roles }}"
     when:
       - item == 'consultemplate' or item == 'go'
