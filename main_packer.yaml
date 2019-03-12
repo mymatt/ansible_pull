@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars:
-    destination: terraform
+    dest_folder: terraform
     s3bucket: ansibleroles
     ansible_roles: nginx
     host_function: web
@@ -22,7 +22,7 @@
       aws_secret_key: "{{ ask }}"
       bucket: "{{ s3bucket }}"
       object: "/{{ item }}.zip"
-      dest: "/{{ destination }}/provisioners/{{ item }}.zip"
+      dest: "/{{ dest_folder }}/provisioners/{{ item }}.zip"
       mode: get
     with_items: "{{ ansible_roles }}"
     become: true
@@ -37,19 +37,19 @@
 
   - name: create folder
     file:
-      path: "/{{ destination }}/provisioners/roles/{{ item }}"
+      path: "/{{ dest_folder }}/provisioners/roles/{{ item }}"
       state: directory
     with_items: "{{ ansible_roles }}"
 
   - name: unzip role
     unarchive:
-      src: "/{{ destination }}/provisioners/{{ item }}.zip"
-      dest: "/{{ destination }}/provisioners/roles/{{ item }}"
+      src: "/{{ dest_folder }}/provisioners/{{ item }}.zip"
+      dest: "/{{ dest_folder }}/provisioners/roles/{{ item }}"
     with_items: "{{ ansible_roles }}"
 
   - name: delete zip files
     file:
-      dest: "/{{ destination }}/provisioners/{{ item }}.zip"
+      dest: "/{{ dest_folder }}/provisioners/{{ item }}.zip"
       state: absent
     with_items: "{{ ansible_roles }}"
 
@@ -70,7 +70,7 @@
       consul_server_ip: "{{ server_ip }}"
       consul_client_ip: "{{ client_ip }}"
       node_name: "{{ host_function }}"
-      destination: "{{ destination }}"
+      destination: "{{ dest_folder }}"
       start: "{{ run }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
@@ -80,7 +80,7 @@
       name: "{{ item }}"
     vars:
       nginx_server_ip: "{{ client_ip }}"
-      destination: "{{ destination }}"
+      destination: "{{ dest_folder }}"
       start: "{{ run }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
@@ -90,7 +90,7 @@
       name: "{{ item }}"
     vars:
       start: "{{ run }}"
-      destination: "{{ destination }}"
+      destination: "{{ dest_folder }}"
     with_items: "{{ ansible_roles }}"
     when:
       - item == 'consultemplate' or item == 'go'
