@@ -13,6 +13,7 @@
     client_ip: 0.0.0.0
     aak: a
     ask: a
+    run: false
 
   tasks:
   - name: get file from s3 bucket
@@ -69,6 +70,7 @@
       consul_server_ip: "{{ server_ip }}"
       consul_client_ip: "{{ client_ip }}"
       node_name: "{{ host_function }}"
+      start: "{{ run }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
 
@@ -77,12 +79,15 @@
       name: "{{ item }}"
     vars:
       nginx_server_ip: "{{ client_ip }}"
+      start: "{{ run }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
   - name: install other roles
     include_role:
       name: "{{ item }}"
+    vars:
+      start: "{{ run }}"
     with_items: "{{ ansible_roles }}"
     when:
       - item == 'consultemplate' or item == 'go'
