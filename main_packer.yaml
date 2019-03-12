@@ -70,6 +70,7 @@
       consul_server_ip: "{{ server_ip }}"
       consul_client_ip: "{{ client_ip }}"
       node_name: "{{ host_function }}"
+      destination: "{{ destination }}"
       start: "{{ run }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
@@ -79,6 +80,7 @@
       name: "{{ item }}"
     vars:
       nginx_server_ip: "{{ client_ip }}"
+      destination: "{{ destination }}"
       start: "{{ run }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
@@ -88,6 +90,7 @@
       name: "{{ item }}"
     vars:
       start: "{{ run }}"
+      destination: "{{ destination }}"
     with_items: "{{ ansible_roles }}"
     when:
       - item == 'consultemplate' or item == 'go'
