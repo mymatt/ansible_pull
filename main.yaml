@@ -24,11 +24,13 @@
 
   - name: check ec2 ACVD
     debug:
-      msg: "IP address is {{ ec2_metadata.instances | map(attribute='private_ip_address') }}"
+      msg: "IP address is {{ item }}"
+    with_items: "{{ ec2_metadata.instances | map(attribute='private_ip_address') }}"
 
   - name: ec2 ip.
     debug:
-      msg: "IP address: {{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+      msg: "IP address: {{ item }}"
+    with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
 # - name: ec2 ip.
 #   debug:
