@@ -22,15 +22,15 @@
         "tag:Name": consul
     register: ec2_metadata
 
-  - name: check ec2 ACVD
-    debug:
-      msg: "IP address is {{ item }}"
-    with_items: "{{ ec2_metadata.instances | map(attribute='private_ip_address') }}"
-
-  - name: ec2 ip.
-    debug:
-      msg: "IP address: {{ item }}"
-    with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+  # - name: check ec2 ACVD
+  #   debug:
+  #     msg: "IP address is {{ item }}"
+  #   with_items: "{{ ec2_metadata.instances | map(attribute='private_ip_address') }}"
+  #
+  # - name: ec2 ip.
+  #   debug:
+  #     msg: "IP address: {{ item }}"
+  #   with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
 # - name: ec2 ip.
 #   debug:
@@ -76,11 +76,12 @@
 
   - name: wait for consul server to be running
     wait_for:
-      host: "{{ ec2_metadata.private_ip_address }}"
+      host: "{{ item }}"
       port: 8300
       delay: 15
       timeout: 300
       state: started
+    with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
     when: consul_agent == 'client'
 
   - name: install consul role
