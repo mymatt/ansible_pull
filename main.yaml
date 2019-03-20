@@ -30,11 +30,11 @@
     with_items: "{{ ec2_metadata | map(attribute='instances') | map('first') | map(attribute='private_ip_address') | list }}"
 
   - name: ec2 ip.
-  debug:
-    msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
-  with_together:
-    - "{{ ec2_metadata.instances|selectattr('state', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
-    - "{{ ec2_metadata.instances|selectattr('state', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+    debug:
+      msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
+    with_together:
+      - "{{ ec2_metadata.instances|selectattr('state', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
+      - "{{ ec2_metadata.instances|selectattr('state', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
   - name: check ec2
     debug:
