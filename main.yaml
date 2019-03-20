@@ -15,26 +15,6 @@
 
   tasks:
 
-  - name: Gather EC2 facts.
-    ec2_instance_facts:
-      region: "{{ reg }}"
-    register: ec2_facts
-
-  - name: Get only running instance IP addresses.
-    debug:
-      msg: "{{ ec2_facts.instances|selectattr('state.name', 'equalto', 'running')|list }}"
-
-  - name: Get only running instance IP addresses.
-    debug:
-      msg: "{{ ec2_facts.instances | selectattr('state.name', 'equalto', 'running') | map(attribute='instance_id') | list}}"
-
-  # - name: Get only running instance IP addresses.
-  #   debug:
-  #     msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
-  #   with_together:
-  #     - "{{ ec2_facts.instances|selectattr('state', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
-  #     - "{{ ec2_facts.instances|selectattr('state', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
-
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
       region: "{{ reg }}"
@@ -42,56 +22,20 @@
         "tag:Name": consul
     register: ec2_metadata
 
-  # - name: check ec2 sdfds
-  #   debug: msg="{{ ec2_metadata.instances }}"
-
   - name: check ec2 ACVD
     debug:
-      msg: "{{ item }}"
-    with_items: "{{ ec2_metadata.instances | map(attribute='private_ip_address') | list }}"
-
-  - name: Get only running instance IP addresses.
-    debug:
-      msg: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|list }}"
+      msg: "IP address is {{ ec2_metadata.instances | map(attribute='private_ip_address') }}"
 
   - name: ec2 ip.
     debug:
-      msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
-    with_together:
-      - "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
-      - "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+      msg: "IP address: {{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
-  # - name: check ec2
-  #   debug:
-  #     msg: "User {{ item.key }} is {{ item.value.name }}"
-  #   loop: "{{ lookup('ec2_metadata', users) }}"
-  #
-  # - name: check ec2 A
-  #   debug: msg="{{ ec2_metadata['private_ip_address'] }}"
-
-
-
-  - name: check ec2 B
-    debug: msg="{{ ec2_metadata.instances.0.private_ip_address }}"
-
-
-
-  - name: check ec2 A1 id
-    debug: msg="{{ ec2_metadata.instances[0].id }}"
-
-  - name: check ec2 A2
-    debug:
-      msg: "{{ item.private_ip_address }}"
-    with_items:
-      - "{{ ec2_metadata.instances }}"
-  # - name: check ec2 B
-  #   debug: msg="{{ ec2_metadata.instances.private_ip_address }}"
-
-  - name: check ec2 C
-    debug: msg="{{ ec2_metadata.instances[0].private_ip_address }}"
-
-  - name: check ec2 D
-    debug: msg="{{ ec2_metadata.instances[0].network_interfaces[0].private_ip_address }}"
+# - name: ec2 ip.
+#   debug:
+#     msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
+#   with_together:
+#     - "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
+#     - "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
   - name: get file from s3 bucket
     aws_s3:
