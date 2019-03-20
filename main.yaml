@@ -21,6 +21,18 @@
         "tag:Name": consul
     register: ec2_metadata
 
+  - name: check ec2 A
+    debug: msg="{{ ec2_metadata.instances }}"
+
+  - name: check ec2 B
+    debug: msg="{{ ec2_metadata.instances.private_ip_address }}"
+
+  - name: check ec2 C
+    debug: msg="{{ ec2_metadata.instances[0].private_ip_address }}"
+
+  - name: check ec2 D
+    debug: msg="{{ ec2_metadata.instances[0].network_interfaces[0].private_ip_address }}"
+
   - name: get file from s3 bucket
     aws_s3:
       bucket: "{{ s3bucket }}"
@@ -58,7 +70,7 @@
 
   - name: wait for consul server to be running
     wait_for:
-      host: "{{ ec2_metadata.instances[0].private_ip_address }}"
+      host: "{{ ec2_metadata.instances.private_ip_address }}"
       port: 8300
       delay: 15
       timeout: 300
