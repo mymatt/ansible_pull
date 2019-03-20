@@ -9,7 +9,6 @@
     ansible_roles: nginx
     host_function: web
     consul_agent: server
-    server_ip: 0.0.0.0
     client_ip: 0.0.0.0
     reg: us-east-1
 
@@ -24,29 +23,8 @@
 
   - name: set consul server ip address
     set_fact:
-      consul_server_ip: "{{ item }}"
+      consul_ip_server: "{{ item }}"
     with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
-
-  - name: check consul ip
-    debug:
-      msg: "IP address is {{ consul_server_ip }}"
-
-  # - name: check ec2 ACVD
-  #   debug:
-  #     msg: "IP address is {{ item }}"
-  #   with_items: "{{ ec2_metadata.instances | map(attribute='private_ip_address') }}"
-  #
-  # - name: ec2 ip.
-  #   debug:
-  #     msg: "IP address: {{ item }}"
-  #   with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
-
-# - name: ec2 ip.
-#   debug:
-#     msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
-#   with_together:
-#     - "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
-#     - "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
   - name: get file from s3 bucket
     aws_s3:
@@ -85,7 +63,7 @@
 
   - name: wait for consul server to be running
     wait_for:
-      host: "{{ consul_server_ip }}"
+      host: "{{ consul_ip_server }}"
       port: 8300
       delay: 15
       timeout: 300
@@ -97,7 +75,7 @@
       name: "{{ item }}"
     vars:
       agent: "{{ consul_agent }}"
-      consul_server_ip: "{{ server_ip }}"
+      consul_server_ip: "{{ consul_ip_server }}"
       consul_client_ip: "{{ client_ip }}"
       node_name: "{{ host_function }}"
       destination: "{{ dest_folder }}"
