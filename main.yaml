@@ -19,7 +19,7 @@
       region: "{{ reg }}"
       filters:
         "tag:Name": consul
-      register: ec2_metadata
+    register: ec2_metadata
 
   - name: get file from s3 bucket
     aws_s3:
