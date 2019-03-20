@@ -16,7 +16,7 @@
   tasks:
 
   - name: Gather EC2 facts.
-    ec2_remote_facts:
+    ec2_instance_facts:
       region: "{{ reg }}"
     register: ec2_facts
 
