@@ -11,8 +11,16 @@
     consul_agent: server
     server_ip: 0.0.0.0
     client_ip: 0.0.0.0
+    reg: us-east-1
 
   tasks:
+  - name: get ec2 instance facts on consul server
+    ec2_instance_facts:
+      region: "{{ reg }}"
+      filters:
+        "tag:Name": consul
+      register: ec2_metadata
+
   - name: get file from s3 bucket
     aws_s3:
       bucket: "{{ s3bucket }}"
@@ -50,7 +58,7 @@
 
   - name: wait for consul server to be running
     wait_for:
-      host: "{{ server_ip }}"
+      host: "{{ ec2_metadata.instances[0].private_ip_address }}"
       port: 8300
       delay: 15
       timeout: 300
