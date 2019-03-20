@@ -24,8 +24,9 @@
   - name: check ec2 A
     debug: msg="{{ ec2_metadata.instances }}"
 
-  - name: check ec2 A1
-    debug: msg="{{ ec2_metadata.private_ip_address }}"
+# doesn't work
+  # - name: check ec2 A1
+  #   debug: msg="{{ ec2_metadata.private_ip_address }}"
 
   - name: check ec2 A2
     debug:
