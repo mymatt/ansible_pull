@@ -22,10 +22,18 @@
 
   - name: Get only running instance IP addresses.
     debug:
-      msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
-    with_together:
-      - "{{ ec2_facts.instances|selectattr('state', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
-      - "{{ ec2_facts.instances|selectattr('state', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+      msg: "{{ ec2_facts.instances|selectattr('state', 'equalto', 'running')|list }}"
+
+  - name: Get only running instance IP addresses.
+    debug:
+      msg: "{{ e2_facts.instances | selectattr('state.name', 'equalto', 'running') | map(attribute='instance_id') | list}}"
+
+  # - name: Get only running instance IP addresses.
+  #   debug:
+  #     msg: "Instance: {{ item.0 }} has IP address: {{ item.1 }}"
+  #   with_together:
+  #     - "{{ ec2_facts.instances|selectattr('state', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
+  #     - "{{ ec2_facts.instances|selectattr('state', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
@@ -40,7 +48,7 @@
   - name: check ec2 ACVD
     debug:
       msg: "{{ item }}"
-    with_items: "{{ ec2_metadata | map(attribute='private_ip_address') | list }}"
+    with_items: "{{ ec2_metadata.instances | map(attribute='private_ip_address') | list }}"
 
   - name: ec2 ip.
     debug:
@@ -49,13 +57,13 @@
       - "{{ ec2_metadata.instances|selectattr('state', 'equalto', 'running')|map(attribute='tags.Name')|list }}"
       - "{{ ec2_metadata.instances|selectattr('state', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
 
-  - name: check ec2
-    debug:
-      msg: "User {{ item.key }} is {{ item.value.name }}"
-    loop: "{{ lookup('ec2_metadata', users) }}"
-
-  - name: check ec2 A
-    debug: msg="{{ ec2_metadata['private_ip_address'] }}"
+  # - name: check ec2
+  #   debug:
+  #     msg: "User {{ item.key }} is {{ item.value.name }}"
+  #   loop: "{{ lookup('ec2_metadata', users) }}"
+  #
+  # - name: check ec2 A
+  #   debug: msg="{{ ec2_metadata['private_ip_address'] }}"
 
 
 
