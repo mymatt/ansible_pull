@@ -11,6 +11,7 @@
     consul_agent: server
     client_ip: 0.0.0.0
     reg: us-east-1
+    site_folder: /sites/go/
 
   tasks:
 
@@ -88,6 +89,7 @@
     vars:
       nginx_server_ip: "{{ client_ip }}"
       destination: "{{ dest_folder }}"
+      site_location: "{{ site_folder }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
@@ -96,6 +98,7 @@
       name: "{{ item }}"
     vars:
       destination: "{{ dest_folder }}"
+      site_location: "{{ site_folder }}"
     with_items: "{{ ansible_roles }}"
     when:
       - item == 'consultemplate' or item == 'go'
