@@ -114,6 +114,6 @@
     vars:
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
-      name_web: "{{ web_name }}"
+      name_web: "{{ host_function }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'go'
