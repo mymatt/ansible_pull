@@ -99,12 +99,21 @@
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
-  - name: install other roles
+  - name: install consultemplate role
     include_role:
       name: "{{ item }}"
     vars:
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
     with_items: "{{ ansible_roles }}"
-    when:
-      - item == 'consultemplate' or item == 'go'
+    when: item == 'consultemplate'
+
+  - name: install go role
+    include_role:
+      name: "{{ item }}"
+    vars:
+      destination: "{{ dest_folder }}"
+      site_location: "{{ site_folder }}"
+      name_web: "{{ web_name }}"
+    with_items: "{{ ansible_roles }}"
+    when: item == 'go'
