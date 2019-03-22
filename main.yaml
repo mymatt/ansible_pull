@@ -15,10 +15,6 @@
     web_name: w
 
   tasks:
-  - name: check web_location list
-    debug:
-      msg: "item: {{ item }}"
-    with_items: "{{ web_location }}"
 
   - name: check web_name list
     debug:
