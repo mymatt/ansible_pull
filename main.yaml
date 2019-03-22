@@ -9,11 +9,16 @@
     ansible_roles: nginx
     host_function: web
     consul_agent: server
-    client_ip: 0.0.0.0
+    ip: 0.0.0.0
     reg: us-east-1
     site_folder: /sites/go/
+    web_location: web
 
   tasks:
+  - name: check web_location list
+    debug:
+      msg: "item: {{ item }}"
+    with_items: "{{ web_location }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
@@ -76,8 +81,7 @@
       name: "{{ item }}"
     vars:
       agent: "{{ consul_agent }}"
-      consul_server_ip: "{{ consul_ip_server }}"
-      consul_client_ip: "{{ client_ip }}"
+      consul_ip: "{{ ip }}"
       node_name: "{{ host_function }}"
       destination: "{{ dest_folder }}"
     with_items: "{{ ansible_roles }}"
@@ -87,7 +91,7 @@
     include_role:
       name: "{{ item }}"
     vars:
-      nginx_server_ip: "{{ client_ip }}"
+      nginx_server_ip: "{{ ip }}"
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
     with_items: "{{ ansible_roles }}"
