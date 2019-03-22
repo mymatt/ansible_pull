@@ -12,13 +12,19 @@
     ip: 0.0.0.0
     reg: us-east-1
     site_folder: /sites/go/
-    web_location: web
+    web_location: w
+    web_name: w
 
   tasks:
   - name: check web_location list
     debug:
       msg: "item: {{ item }}"
     with_items: "{{ web_location }}"
+
+  - name: check web_name list
+    debug:
+      msg: "item: {{ item }}"
+    with_items: "{{ web_name }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
@@ -94,6 +100,8 @@
       nginx_server_ip: "{{ ip }}"
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
+      location_web: "{{ web_location }}"
+      name_web: "{{ web_name }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
