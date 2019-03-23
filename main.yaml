@@ -13,6 +13,8 @@
     reg: us-east-1
     site_folder: /sites/go/
     web_name: w
+    web_location: w
+    web_service: w
 
   tasks:
 
@@ -20,6 +22,16 @@
     debug:
       msg: "item: {{ item }}"
     with_items: "{{ web_name }}"
+
+  - name: check web_location list
+    debug:
+      msg: "item: {{ item }}"
+    with_items: "{{ web_location }}"
+
+  - name: check web_service list
+    debug:
+      msg: "item: {{ item }}"
+    with_items: "{{ web_service }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
