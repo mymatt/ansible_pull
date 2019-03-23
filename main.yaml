@@ -18,21 +18,6 @@
 
   tasks:
 
-  - name: check web_name list
-    debug:
-      msg: "item: {{ item }}"
-    with_items: "{{ web_name }}"
-
-  - name: check web_location list
-    debug:
-      msg: "item: {{ item }}"
-    with_items: "{{ web_location }}"
-
-  - name: check web_service list
-    debug:
-      msg: "item: {{ item }}"
-    with_items: "{{ web_service }}"
-
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
       region: "{{ reg }}"
@@ -97,6 +82,7 @@
       consul_ip: "{{ ip }}"
       node_name: "{{ host_function }}"
       destination: "{{ dest_folder }}"
+      service_web: "{{ web_service }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
 
@@ -108,6 +94,8 @@
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
       name_web: "{{ web_name }}"
+      service_web: "{{ web_service }}"
+      location_web: "{{ web_location }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
