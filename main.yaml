@@ -22,25 +22,23 @@
 
   tasks:
 
-  - name: web name list
-    debug:
-      msg: "{{ item }}"
-    with_items: "{{ web_name_list }}"
-
-  - name: web location list
-    debug:
-      msg: "{{ item }}"
-    with_items: "{{ web_location_list }}"
-
-  - name: web service list
-    debug:
-      msg: "{{ item }}"
-    with_items: "{{ web_service_list }}"
-
-  - name: web weight list
+  - name: list web_weight_list
     debug:
       msg: "{{ item }}"
     with_items: "{{ web_weight_list }}"
+
+  - name: list web_active_profile
+    debug:
+      msg: "{{ item }}"
+    with_items: "{{ web_active_profile }}"
+
+  - name: list web_weight_list
+    debug:
+      msg: "{{ web_weight_list }}"
+
+  - name: list web_active_profile
+    debug:
+      msg: "{{ web_active_profile }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
@@ -107,6 +105,8 @@
       node_name: "{{ host_function }}"
       destination: "{{ dest_folder }}"
       service_web: "{{ web_service }}"
+      weight_web_list: "{{ web_weight_list }}"
+      active_profile_web: "{{ web_active_profile }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
 
