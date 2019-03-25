@@ -16,9 +16,31 @@
     web_location_list: w
     web_service_list: w
     web_service: w
+    web_weight_list: w
+    web_active_profile: w
 
 
   tasks:
+
+  - name: web name list
+    debug:
+      msg: "{{ item }}"
+    with_items: "{{ web_name_list }}"
+
+  - name: web location list
+    debug:
+      msg: "{{ item }}"
+    with_items: "{{ web_location_list }}"
+
+  - name: web service list
+    debug:
+      msg: "{{ item }}"
+    with_items: "{{ web_service_list }}"
+
+  - name: web weight list
+    debug:
+      msg: "{{ item }}"
+    with_items: "{{ web_weight_list }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
@@ -98,6 +120,8 @@
       name_web_list: "{{ web_name_list }}"
       service_web_list: "{{ web_service_list }}"
       location_web_list: "{{ web_location_list }}"
+      weight_web_list: "{{ web_weight_list }}"
+      profile_web_active: {{ web_active_profile }}
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
