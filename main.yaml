@@ -22,24 +22,6 @@
 
   tasks:
 
-  - name: list web_weight_list
-    debug:
-      msg: "{{ item }}"
-    with_items: "{{ web_weight_list }}"
-
-  - name: list web_active_profile
-    debug:
-      msg: "{{ item }}"
-    with_items: "{{ web_active_profile }}"
-
-  - name: list web_weight_list
-    debug:
-      msg: "{{ web_weight_list }}"
-
-  - name: list web_active_profile
-    debug:
-      msg: "{{ web_active_profile }}"
-
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
       region: "{{ reg }}"
