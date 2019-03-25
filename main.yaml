@@ -121,7 +121,7 @@
       service_web_list: "{{ web_service_list }}"
       location_web_list: "{{ web_location_list }}"
       weight_web_list: "{{ web_weight_list }}"
-      profile_web_active: {{ web_active_profile }}
+      profile_web_active: "{{ web_active_profile }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
