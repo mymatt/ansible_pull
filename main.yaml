@@ -19,6 +19,7 @@
     web_weight_list: w
     web_active_profile: w
     kv_path: w
+    web_start: w
 
 
   tasks:
@@ -91,6 +92,7 @@
       weight_web_list: "{{ web_weight_list }}"
       active_profile_web: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
+      start_web: "{{ web_start }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
 
@@ -107,6 +109,7 @@
       weight_web_list: "{{ web_weight_list }}"
       profile_web_active: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
+      start_web: "{{ web_start }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
