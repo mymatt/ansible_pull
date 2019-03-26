@@ -18,6 +18,7 @@
     web_service: w
     web_weight_list: w
     web_active_profile: w
+    kv_path: w
 
 
   tasks:
@@ -89,6 +90,7 @@
       service_web: "{{ web_service }}"
       weight_web_list: "{{ web_weight_list }}"
       active_profile_web: "{{ web_active_profile }}"
+      kv_path_web: "{{ kv_path }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'consul'
 
@@ -104,6 +106,7 @@
       location_web_list: "{{ web_location_list }}"
       weight_web_list: "{{ web_weight_list }}"
       profile_web_active: "{{ web_active_profile }}"
+      kv_path_web: "{{ kv_path }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
