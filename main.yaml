@@ -8,7 +8,7 @@
     s3bucket: ansibleroles
     ansible_roles: nginx
     host_function: web
-    consul_agent: server
+    consul_agent: nil
     ip: 0.0.0.0
     reg: us-east-1
     site_folder: /sites/go/
@@ -31,11 +31,13 @@
       filters:
         "tag:Name": consul
     register: ec2_metadata
+    when: consul_agent != 'nil'
 
   - name: set consul server ip address
     set_fact:
       consul_ip_server: "{{ item }}"
     with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+    when: consul_agent != 'nil'
 
   - name: get file from s3 bucket
     aws_s3:
