@@ -20,6 +20,7 @@
     web_active_profile: w
     kv_path: w
     web_start: w
+    web_port: 80
 
 
   tasks:
@@ -129,5 +130,6 @@
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
       name_web: "{{ host_function }}"
+      port: "{{ web_port }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'go'
