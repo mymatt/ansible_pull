@@ -36,29 +36,6 @@
     with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
     when: consul_agent != 'nil'
 
-  - name: alb test
-    debug:
-      msg: "alb name: {{ alb_name }}"
-
-
-  # - name: get alb facts
-  #   ec2_elb_facts:
-  #       names: "{{ alb_name }}"
-  #       region: "{{ reg }}"
-  #   register: elb_facts
-  #   when: alb_name != 'nil'
-  #
-  # - name: alb test dns
-  #   debug:
-  #     msg: "{{ item.dns_name }}"
-  #   with_items: "{{ elb_facts.elbs }}"
-  #   when: alb_name != 'nil'
-  #
-  # - name: alb test
-  #   debug:
-  #     msg: "alb name: {{ elb_facts.elbs.dns_name }}"
-  #   when: alb_name != 'nil'
-
   - name: get file from s3 bucket
     aws_s3:
       bucket: "{{ s3bucket }}"
@@ -130,7 +107,7 @@
       profile_web_active: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
-      name_alb: "{{ elb_facts.elbs.0.dns_name }}"
+      name_alb: "{{ alb_name }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
