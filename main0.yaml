@@ -12,13 +12,17 @@
     ip: 0.0.0.0
     reg: us-east-1
     site_folder: /sites/go/
+    web_name_list: w
     web_location_list: w
+    web_service_list: w
+    web_service: w
     web_weight_list: w
     web_active_profile: w
     kv_path: w
     web_start: w
     web_port: 80
     alb_name: nil
+
 
   tasks:
 
@@ -45,7 +49,7 @@
 
   - name: alb test
     debug:
-      msg: "alb name: {{ elb_facts.elbs.0.dns_name }}"
+      msg: "alb name: {{ elb_facts.elbs.0.dns_name}}"
     when: alb_name != 'nil'
 
   - name: get file from s3 bucket
@@ -100,6 +104,7 @@
       consul_ip: "{{ ip }}"
       node_name: "{{ host_function }}"
       destination: "{{ dest_folder }}"
+      service_web: "{{ web_service }}"
       weight_web_list: "{{ web_weight_list }}"
       active_profile_web: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
@@ -114,12 +119,13 @@
       nginx_server_ip: "{{ ip }}"
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
+      name_web_list: "{{ web_name_list }}"
+      service_web_list: "{{ web_service_list }}"
       location_web_list: "{{ web_location_list }}"
       weight_web_list: "{{ web_weight_list }}"
       profile_web_active: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
-      name_alb: "{{ elb_facts.elbs.0.dns_name }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
