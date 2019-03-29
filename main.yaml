@@ -43,9 +43,15 @@
     register: elb_facts
     when: alb_name != 'nil'
 
+  - name: alb test dns
+    debug:
+      msg: "{{ item.dns_name }}"
+    with_items: "{{ elb_facts.elbs }}"
+    when: alb_name != 'nil'
+
   - name: alb test
     debug:
-      msg: "alb name: {{ elb_facts.elbs.0.dns_name }}"
+      msg: "alb name: {{ elb_facts.elbs.dns_name }}"
     when: alb_name != 'nil'
 
   - name: get file from s3 bucket
