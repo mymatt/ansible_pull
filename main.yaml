@@ -20,6 +20,7 @@
     web_start: w
     web_port: 80
     alb_name: nil
+    dns_zone: .local
 
   tasks:
 
@@ -110,6 +111,7 @@
       start_web: "{{ web_start }}"
       name_alb: "{{ alb_name }}"
       name_web_list: "{{ web_name }}"
+      zone_dns: "{{ dns_zone }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
