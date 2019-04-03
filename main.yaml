@@ -21,6 +21,7 @@
     web_port: 80
     alb_name: nil
     dns_zone: .local
+    proxy_ip: 0.0.0.0
 
   tasks:
 
@@ -29,14 +30,28 @@
       region: "{{ reg }}"
       filters:
         "tag:Name": consul
-    register: ec2_metadata
+    register: consul_metadata
     when: consul_agent != 'nil'
 
   - name: set consul server ip address
     set_fact:
       consul_ip_server: "{{ item }}"
-    with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+    with_items: "{{ consul_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
     when: consul_agent != 'nil'
+
+  - name: get ec2 instance facts on proxy server
+    ec2_instance_facts:
+      region: "{{ reg }}"
+      filters:
+        "tag:Name": proxy
+    register: proxy_metadata
+    when: host_function == 'proxy'
+
+  - name: set proxy server ip address
+    set_fact:
+      ip: "{{ item }}"
+    with_items: "{{ proxy_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+    when: host_function == 'proxy'
 
   - name: get file from s3 bucket
     aws_s3:
