@@ -90,12 +90,20 @@
       consul_ip: "{{ ip }}"
       node_name: "{{ host_function }}"
       destination: "{{ dest_folder }}"
+    with_items: "{{ ansible_roles }}"
+    when: item == 'consul'
+
+  - name: install consul kv's
+    include_role:
+      name: "{{ item }}"
+    vars:
+      agent: "{{ consul_agent }}"
       weight_web_list: "{{ web_weight_list }}"
       active_profile_web: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
     with_items: "{{ ansible_roles }}"
-    when: item == 'consul'
+    when: item == 'kvconsul'
 
   - name: install nginx role
     include_role:
@@ -106,7 +114,6 @@
       site_location: "{{ site_folder }}"
       location_web_list: "{{ web_location_list }}"
       weight_web_list: "{{ web_weight_list }}"
-      profile_web_active: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
       name_alb: "{{ alb_name }}"
