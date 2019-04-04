@@ -49,7 +49,7 @@
 
   - name: set proxy server ip address
     set_fact:
-      ip: "{{ item }}"
+      proxy_ip: "{{ item }}"
     with_items: "{{ proxy_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
     when: host_function == 'proxy'
 
@@ -124,7 +124,7 @@
     include_role:
       name: "{{ item }}"
     vars:
-      nginx_server_ip: "{{ ip }}"
+      nginx_server_ip: "{{ proxy_ip }}"
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
       location_web_list: "{{ web_location_list }}"
