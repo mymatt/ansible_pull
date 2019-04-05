@@ -147,7 +147,7 @@
       kv_path_web: "{{ kv_path | list }}"
       start_web: "{{ web_start }}"
       name_alb: "{{ alb_name }}"
-      name_web_list: "{{ web_name | list }}"
+      name_web_list: "{{ name_web }}"
       zone_dns: "{{ dns_zone }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
