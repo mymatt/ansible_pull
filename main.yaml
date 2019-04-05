@@ -22,8 +22,23 @@
     alb_name: nil
     dns_zone: .local
     proxy_ip: 0.0.0.0
+    name_web: []
 
   tasks:
+
+  - name: convert string to list
+    set_fact:
+      name_web: "{{ name_web + [ item ] }}"
+    with_items: "{{ web_name }}"
+
+  - name: print variable
+    debug:
+      msg: "web_name variable: {{ name_web }}"
+
+  - name: print individual list
+    debug:
+      msg: "web_name item: {{ item }}"
+    with_items: "{{ name_web }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
