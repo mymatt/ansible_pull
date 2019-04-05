@@ -33,9 +33,12 @@
     debug:
       msg: "{{ name_web_list.split(',') }}"
 
+  # - name: remove [] from name_web_list
+  #   debug:
+  #     msg: "{{ name_web_list | regex_replace('^[','') | regex_replace(']$','') }}"
   - name: remove [] from name_web_list
     debug:
-      msg: "{{ name_web_list | regex_replace('^[','') | regex_replace(']$','') }}"
+      msg: "{{ name_web_list | regex_replace(']') | regex_replace('\\[') }}"
 
   - name: remove "" from name_web_list
     debug:
