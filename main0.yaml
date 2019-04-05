@@ -12,17 +12,16 @@
     ip: 0.0.0.0
     reg: us-east-1
     site_folder: /sites/go/
-    web_name_list: w
     web_location_list: w
-    web_service_list: w
-    web_service: w
     web_weight_list: w
     web_active_profile: w
+    web_name: w
     kv_path: w
     web_start: w
     web_port: 80
     alb_name: nil
-
+    dns_zone: .local
+    proxy_ip: 0.0.0.0
 
   tasks:
 
@@ -31,26 +30,28 @@
       region: "{{ reg }}"
       filters:
         "tag:Name": consul
-    register: ec2_metadata
+    register: consul_metadata
     when: consul_agent != 'nil'
 
   - name: set consul server ip address
     set_fact:
       consul_ip_server: "{{ item }}"
-    with_items: "{{ ec2_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+    with_items: "{{ consul_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
     when: consul_agent != 'nil'
 
-  - name: get alb facts
-    ec2_elb_facts:
-        names: "{{ alb_name }}"
-        region: "{{ reg }}"
-    register: elb_facts
-    when: alb_name != 'nil'
+  - name: get ec2 instance facts on proxy server
+    ec2_instance_facts:
+      region: "{{ reg }}"
+      filters:
+        "tag:Name": proxy
+    register: proxy_metadata
+    when: host_function == 'proxy'
 
-  - name: alb test
-    debug:
-      msg: "alb name: {{ elb_facts.elbs.0.dns_name}}"
-    when: alb_name != 'nil'
+  - name: set proxy server ip address
+    set_fact:
+      proxy_ip: "{{ item }}"
+    with_items: "{{ proxy_metadata.instances|selectattr('state.name', 'equalto', 'running')|map(attribute='private_ip_address')|list }}"
+    when: host_function == 'proxy'
 
   - name: get file from s3 bucket
     aws_s3:
@@ -104,28 +105,35 @@
       consul_ip: "{{ ip }}"
       node_name: "{{ host_function }}"
       destination: "{{ dest_folder }}"
-      service_web: "{{ web_service }}"
+    with_items: "{{ ansible_roles }}"
+    when: item == 'consul'
+
+  - name: install consul kv's
+    include_role:
+      name: "{{ item }}"
+    vars:
+      agent: "{{ consul_agent }}"
       weight_web_list: "{{ web_weight_list }}"
       active_profile_web: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
     with_items: "{{ ansible_roles }}"
-    when: item == 'consul'
+    when: item == 'kvconsul'
 
   - name: install nginx role
     include_role:
       name: "{{ item }}"
     vars:
-      nginx_server_ip: "{{ ip }}"
+      nginx_server_ip: "{{ proxy_ip }}"
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
-      name_web_list: "{{ web_name_list }}"
-      service_web_list: "{{ web_service_list }}"
       location_web_list: "{{ web_location_list }}"
       weight_web_list: "{{ web_weight_list }}"
-      profile_web_active: "{{ web_active_profile }}"
       kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
+      name_alb: "{{ alb_name }}"
+      name_web_list: "{{ web_name }}"
+      zone_dns: "{{ dns_zone }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
 
