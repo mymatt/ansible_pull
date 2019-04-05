@@ -44,6 +44,15 @@
     debug:
       msg: "{{ name_web_list | regex_replace('\"','') }}"
 
+  - name: remove [] "" from name_web_list
+    debug:
+      msg: "{{ name_web_list | regex_replace('\"','') | regex_replace(']') | regex_replace('\\[') }}"
+
+  - name: Do ALL: split , remove [] "" from name_web_list
+    debug:
+      msg: "{{ name_web_list.split(',') | regex_replace('\"','') | regex_replace(']') | regex_replace('\\[') }}"
+
+
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
       region: "{{ reg }}"
