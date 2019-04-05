@@ -15,30 +15,15 @@
     web_location_list: w
     web_weight_list: w
     web_active_profile: w
-    web_name: w
+    name_web_list: w
     kv_path: w
     web_start: w
     web_port: 80
     alb_name: nil
     dns_zone: .local
     proxy_ip: 0.0.0.0
-    name_web: []
 
   tasks:
-
-  - name: convert string to list
-    set_fact:
-      name_web: "{{ name_web + [ item ] }}"
-    with_items: "{{ web_name }}"
-
-  - name: print variable
-    debug:
-      msg: "web_name variable: {{ name_web }}"
-
-  - name: print individual list
-    debug:
-      msg: "web_name item: {{ item }}"
-    with_items: "{{ name_web }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
@@ -142,12 +127,12 @@
       nginx_server_ip: "{{ proxy_ip }}"
       destination: "{{ dest_folder }}"
       site_location: "{{ site_folder }}"
-      location_web_list: "{{ web_location_list | list }}"
+      location_web_list: "{{ web_location_list }}"
       weight_web_list: "{{ web_weight_list }}"
-      kv_path_web: "{{ kv_path | list }}"
+      kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
       name_alb: "{{ alb_name }}"
-      name_web_list: "{{ name_web }}"
+      name_web_list: "{{ name_web_list }}"
       zone_dns: "{{ dns_zone }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
