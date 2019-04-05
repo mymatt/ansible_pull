@@ -60,17 +60,17 @@
     debug:
       msg: "{{ web_list_rem_split }}"
 
-  - name: A) set_fact variable name_web_list
-    set_fact:
-      web_list_split: "{{ name_web_list.split(',') }}"
-
-  - name: B) remove [] "" from name_web_list
-    set_fact:
-      web_list_split_rem: "{{ web_list_split | regex_replace('\"','') | regex_replace(']') | regex_replace('\\[') }}"
-
-  - name: print web_list_rem_split
-    debug:
-      msg: "{{ web_list_split_rem }}" 
+  # - name: A) set_fact variable name_web_list
+  #   set_fact:
+  #     web_list_split: "{{ name_web_list.split(',') }}"
+  #
+  # - name: B) remove [] "" from name_web_list
+  #   set_fact:
+  #     web_list_split_rem: "{{ web_list_split | regex_replace('\"','') | regex_replace(']') | regex_replace('\\[') }}"
+  #
+  # - name: print web_list_rem_split
+  #   debug:
+  #     msg: "{{ web_list_split_rem }}"
 
   - name: get ec2 instance facts on consul server
     ec2_instance_facts:
@@ -179,7 +179,7 @@
       kv_path_web: "{{ kv_path }}"
       start_web: "{{ web_start }}"
       name_alb: "{{ alb_name }}"
-      name_web_list: "{{ name_web_list }}"
+      name_web_list: "{{ web_list_rem_split }}"
       zone_dns: "{{ dns_zone }}"
     with_items: "{{ ansible_roles }}"
     when: item == 'nginx'
